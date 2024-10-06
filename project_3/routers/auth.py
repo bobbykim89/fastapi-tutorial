@@ -24,6 +24,7 @@ class CreateUserRequest(BaseModel):
     last_name: str
     password: str
     role: str
+    phone_number: str
 
 
 class Token(BaseModel):
@@ -45,9 +46,10 @@ db_dependency = Annotated[Session, Depends(get_db)]
 def authenticate_user(username: str, password: str, db):
     user = db.query(Users).filter(Users.username == username).first()
     pwd_bytes = password.encode('utf-8')
+    encoded_hashed_password = user.hashed_password.encode('utf-8')
     if not user:
         return False
-    if not bcrypt.checkpw(password=pwd_bytes, hashed_password=user.hashed_password):
+    if not bcrypt.checkpw(password=pwd_bytes, hashed_password=encoded_hashed_password):
         return False
     return user
 
@@ -89,7 +91,8 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
         last_name=create_user_request.last_name,
         role=create_user_request.role,
         hashed_password=hash_password(create_user_request.password),
-        is_active=True
+        is_active=True,
+        phone_number=create_user_request.phone_number
     )
     db.add(create_user_model)
     db.commit()
