@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
-from models import Users
-from database import SessionLocal
+from ..models import Users
+from ..database import SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette import status
-from util.hash_password import hash_password
+from ..util.hash_password import hash_password
 from fastapi.security import OAuth2PasswordBearer
 import bcrypt
 from .auth import get_current_user
