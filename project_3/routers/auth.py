@@ -45,10 +45,10 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 def authenticate_user(username: str, password: str, db):
     user = db.query(Users).filter(Users.username == username).first()
-    pwd_bytes = password.encode('utf-8')
-    encoded_hashed_password = user.hashed_password.encode('utf-8')
     if not user:
         return False
+    pwd_bytes = password.encode('utf-8')
+    encoded_hashed_password = user.hashed_password.encode('utf-8')
     if not bcrypt.checkpw(password=pwd_bytes, hashed_password=encoded_hashed_password):
         return False
     return user
