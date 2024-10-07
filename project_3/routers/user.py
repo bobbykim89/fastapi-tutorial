@@ -59,7 +59,7 @@ async def change_password(user: user_dependency, db: db_dependency, user_verific
         raise HTTPException(status_code=401, detail='Authentication Failed')
     user_model = db.query(Users).filter(Users.id == user.get('id')).first()
     pwd_bytes = user_verification.password.encode('utf-8')
-    if not bcrypt.checkpw(password=pwd_bytes, hashed_password=user_model.hashed_password):
+    if not bcrypt.checkpw(password=pwd_bytes, hashed_password=user_model.hashed_password.encode('utf-8')):
         raise HTTPException(status_code=401, detail='Error on password change')
     user_model.hashed_password = hash_password(user_verification.new_password)
     db.add(user_model)

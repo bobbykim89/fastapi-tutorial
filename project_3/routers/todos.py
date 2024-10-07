@@ -8,7 +8,10 @@ from pydantic import BaseModel, Field
 from .auth import get_current_user
 
 
-router = APIRouter()
+router = APIRouter(
+    prefix='/todos',
+    tags=['todos']
+)
 
 
 def get_db():
