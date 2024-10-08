@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from ..models import Users
 from ..database import SessionLocal
@@ -11,6 +11,7 @@ import bcrypt
 from jose import jwt, JWTError
 from datetime import timedelta, datetime, timezone
 from ..util.load_env import SECRET_KEY, JWT_ALGORITHM
+from fastapi.templating import Jinja2Templates
 
 router = APIRouter(prefix='/auth', tags=['auth'])
 
@@ -41,6 +42,22 @@ def get_db():
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
+
+templates = Jinja2Templates(directory='project_3/templates')
+
+### Pages ###
+
+
+@router.get('/login-page')
+def render_login_page(req: Request):
+    return templates.TemplateResponse('login.html', {'request': req})
+
+
+@router.get('/register-page')
+def render_register_page(req: Request):
+    return templates.TemplateResponse('register.html', {'request': req})
+
+### Endpoints ###
 
 
 def authenticate_user(username: str, password: str, db):
